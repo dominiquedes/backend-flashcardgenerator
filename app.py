@@ -60,6 +60,7 @@ def generate_flashcards(text, number_of_cards):
 
     try:
         flashcards = json.loads(cleaned_data)
+        print (flashcards)
     except json.JSONDecodeError as e:
         print(f"Error parsing JSON: {e}")
         flashcards = []
