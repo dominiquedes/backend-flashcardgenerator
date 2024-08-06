@@ -50,23 +50,27 @@ def generate_flashcards(text, number_of_cards):
 
     result = response.text if hasattr(response, 'text') else response
     
-    print(result)
+    print("Raw result:", result)
     
     cleaned_data = result.strip()
 
+    # Clean up code block delimiters if they exist
     if cleaned_data.startswith('```javascript') or cleaned_data.startswith('```js'):
         cleaned_data = cleaned_data.replace('```javascript', '').replace('```js', '').strip('```')
     elif cleaned_data.startswith('```json'):
-        cleaned_data = cleaned_data.strip('```json').strip('```')
+        cleaned_data = cleaned_data.replace('```json', '').replace('```', '').strip()
+
+    print("Cleaned data:", cleaned_data)
 
     try:
         flashcards = json.loads(cleaned_data)
-        print(flashcards)
+        print("Parsed flashcards:", flashcards)
     except json.JSONDecodeError as e:
         print(f"Error parsing JSON: {e}")
         flashcards = []
 
     return flashcards
+
 
 @app.route('/create-flashcards', methods=['POST'])
 def upload_file():
