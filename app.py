@@ -55,10 +55,10 @@ def generate_flashcards(text, number_of_cards):
     cleaned_data = result.strip()
 
     # Clean up code block delimiters if they exist
-    if cleaned_data.startswith('```javascript') or cleaned_data.startswith('```js'):
-        cleaned_data = cleaned_data.replace('```javascript', '').replace('```js', '').strip('```')
-    elif cleaned_data.startswith('```json'):
+    if cleaned_data.startswith('```json'):
         cleaned_data = cleaned_data.replace('```json', '').replace('```', '').strip()
+    elif cleaned_data.startswith('```javascript') or cleaned_data.startswith('```js'):
+        cleaned_data = cleaned_data.replace('```javascript', '').replace('```js', '').replace('```', '').strip()
 
     print("Cleaned data:", cleaned_data)
 
@@ -70,6 +70,7 @@ def generate_flashcards(text, number_of_cards):
         flashcards = []
 
     return flashcards
+
 
 
 @app.route('/create-flashcards', methods=['POST'])
