@@ -3,11 +3,10 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import os
 import json
-from pypdf import PdfReader  
+from pypdf import PdfReader
 from pptx import Presentation
 import google.generativeai as genai
 from dotenv import load_dotenv
-
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "*"}})
@@ -19,24 +18,20 @@ genai.configure(api_key=api_key)
 model_gen = genai.GenerativeModel('gemini-1.5-flash')
 
 UPLOAD_FOLDER = 'uploads'
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def extract_text_from_pdf(file_path):
     reader = PdfReader(file_path)
-    text = []
-    for page in reader.pages:
-        text.append(page.extract_text())
+    text = [page.extract_text() for page in reader.pages]
     return " ".join(text)
 
 def extract_text_from_pptx(file_path):
     presentation = Presentation(file_path)
-    text = []
-    for slide in presentation.slides:
-        for shape in slide.shapes:
-            if hasattr(shape, "text"):
-                text.append(shape.text)
+    text = [
+        shape.text for slide in presentation.slides
+        for shape in slide.shapes if hasattr(shape, "text")
+    ]
     return "\n".join(text)
 
 def extract_text(file_path):
@@ -52,14 +47,9 @@ def generate_flashcards(text, number_of_cards):
         f"generate {number_of_cards} flashcards for the following as an array of objects only nothing else just the array as 'front': for the question and 'back': for the answer (no ```json```): {text}"
     )
 
-    if hasattr(response, 'text'):
-        result = response.text
-        print (result)
-    else:
-        result = response
-
+    result = response.text if hasattr(response, 'text') else response
     cleaned_data = result.strip()
-    
+
     if cleaned_data.startswith('```javascript'):
         cleaned_data = cleaned_data.strip('```javascript').strip('```')
     elif cleaned_data.startswith('```json'):
@@ -86,7 +76,7 @@ def upload_file():
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
-        
+
         try:
             number_of_cards = int(request.form.get('number_of_cards', 10))
             text = extract_text(file_path)
