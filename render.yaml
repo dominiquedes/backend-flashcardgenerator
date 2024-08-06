@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: flask-app
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: ""
+    startCommand: gunicorn app:app
+    envVars:
+      - key: API_KEY
+        value: AIzaSyDbWXReucO5RoKUyvijf7TiQEvwTfKCs7w
