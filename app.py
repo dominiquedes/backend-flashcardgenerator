@@ -45,7 +45,7 @@ def extract_text(file_path):
 
 def generate_flashcards(text, number_of_cards):
     response = model_gen.generate_content(
-        f"Generate {number_of_cards} flashcards based on the following text. Each flashcard should be represented as a JSON object with two keys: 'front' and 'back'. The 'front' key should contain the question, and the 'back' key should contain the answer. The output should be a single JSON array containing these flashcard objects. Do not include any extra text, code blocks, or delimiters. Here's the text to generate flashcards from: {text}"
+        f"Generate exactly {number_of_cards} flashcards from the following text. Each flashcard should be a JSON object with two properties: 'front' and 'back'. The 'front' property should contain the question, and the 'back' property should contain the answer. The result must be a single JSON array with all flashcard objects inside it. Each object should be separated by a comma, and there should be no trailing comma after the last object. Ensure that the JSON array is properly formatted without any extra text, code blocks, or delimiters. Use double quotes for all keys and string values. Here's the text: {text}"
     )
 
     result = response.text if hasattr(response, 'text') else response
