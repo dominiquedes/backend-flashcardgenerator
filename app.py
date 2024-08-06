@@ -50,8 +50,8 @@ def generate_flashcards(text, number_of_cards):
     result = response.text if hasattr(response, 'text') else response
     cleaned_data = result.strip()
 
-    if cleaned_data.startswith('```javascript'):
-        cleaned_data = cleaned_data.strip('```javascript').strip('```')
+    if cleaned_data.startswith('```javascript') or cleaned_data.startswith('```js'):
+        cleaned_data = cleaned_data.replace('```javascript', '').replace('```js', '').strip('```')
     elif cleaned_data.startswith('```json'):
         cleaned_data = cleaned_data.strip('```json').strip('```')
 
