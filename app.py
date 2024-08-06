@@ -3,14 +3,18 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 import os
 import json
-from pypdf import PdfReader  # Updated to use pypdf
+from pypdf import PdfReader  
 from pptx import Presentation
 import google.generativeai as genai
+from dotenv import load_dotenv
+
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "*"}})
 
-api_key = "AIzaSyDbWXReucO5RoKUyvijf7TiQEvwTfKCs7w"
+load_dotenv()
+
+api_key = os.getenv("API_KEY")
 genai.configure(api_key=api_key)
 model_gen = genai.GenerativeModel('gemini-1.5-flash')
 
@@ -92,4 +96,4 @@ def upload_file():
             return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=5000)
