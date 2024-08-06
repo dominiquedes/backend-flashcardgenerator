@@ -44,10 +44,13 @@ def extract_text(file_path):
 
 def generate_flashcards(text, number_of_cards):
     response = model_gen.generate_content(
-        f"generate {number_of_cards} flashcards for the following as an array of objects only nothing else just the array as 'front': for the question and 'back': for the answer (no ```json```): {text}"
+        f"generate {number_of_cards} flashcards for the following as an array of objects, json format only nothing else just the array as 'front': for the question and 'back': for the answer (no ```json```): {text}"
     )
 
     result = response.text if hasattr(response, 'text') else response
+    
+    print (result)
+    
     cleaned_data = result.strip()
 
     if cleaned_data.startswith('```javascript') or cleaned_data.startswith('```js'):
