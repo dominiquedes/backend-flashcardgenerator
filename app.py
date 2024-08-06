@@ -1,3 +1,4 @@
+import uuid
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -49,7 +50,7 @@ def generate_flashcards(text, number_of_cards):
 
     result = response.text if hasattr(response, 'text') else response
     
-    print (result)
+    print(result)
     
     cleaned_data = result.strip()
 
@@ -60,7 +61,7 @@ def generate_flashcards(text, number_of_cards):
 
     try:
         flashcards = json.loads(cleaned_data)
-        print (flashcards)
+        print(flashcards)
     except json.JSONDecodeError as e:
         print(f"Error parsing JSON: {e}")
         flashcards = []
@@ -77,8 +78,13 @@ def upload_file():
         return jsonify({'error': 'No selected file'}), 400
     
     if file:
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        # Generate a UUID for the file
+        unique_id = str(uuid.uuid4())
+        original_filename = secure_filename(file.filename)
+        extension = os.path.splitext(original_filename)[1]
+        unique_filename = f"{unique_id}{extension}"
+        
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
         file.save(file_path)
 
         try:
