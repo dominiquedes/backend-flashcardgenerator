@@ -54,6 +54,7 @@ def generate_flashcards(text, number_of_cards):
 
     if hasattr(response, 'text'):
         result = response.text
+        print (result)
     else:
         result = response
 
